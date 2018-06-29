@@ -2,14 +2,17 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
-var uglify = require('gulp-uglify');
 var browserSync = require('browser-sync').create();
 var sourcemaps = require('gulp-sourcemaps');
 var del = require('del');
+let babel = require('gulp-babel');
 
 gulp.task('css', () => {
-    gulp.src('./scss/*.scss')
-        .pipe(sass().on('error', sass.logError))
+    return gulp.src('./scss/*.scss')
+        .pipe(sass({
+                outputStyle: process.env.NODE_ENV == 'production' ? 'compressed' : 'expanded'
+            })
+            .on('error', sass.logError))
         .pipe(sourcemaps.init())
         .pipe(postcss([autoprefixer({
             browsers: ['last 2 versions']
@@ -37,7 +40,7 @@ gulp.task('move', ['minify'], () => {
 
 gulp.task('minify', () => {
     return gulp.src('js/**/*.js')
-        .pipe(uglify())
+        .pipe(babel())
         .pipe(gulp.dest('dist/js'));
 });
 

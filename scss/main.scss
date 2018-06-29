@@ -1,5 +1,10 @@
 @import "loader";
-
 body {
   font-family: 'Open Sans', sans-serif;
+}
+
+#generated img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
