@@ -1,0 +1,23 @@
+{
+  "name": "js-workers-sample",
+  "version": "1.0.0",
+  "description": "Sample project for using webworkers to process images and service workers to use offline",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clarktozer/js-workers-sample.git"
+  },
+  "author": "Clark Tozer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clarktozer/js-workers-sample/issues"
+  },
+  "homepage": "https://github.com/clarktozer/js-workers-sample#readme",
+  "devDependencies": {
+    "express": "^4.16.3"
+  }
+}
