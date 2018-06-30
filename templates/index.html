@@ -7,7 +7,7 @@
 </head>
 
 <body id="root">
-    <div>
+    <div class="loader">
         <div class="lds-roller">
             <div></div>
             <div></div>
@@ -19,7 +19,17 @@
             <div></div>
         </div>
     </div>
-    <div id="generated"></div>
+    <div id="image-container">
+        <img data-image-src="1.JPG" />
+        <img data-image-src="2.JPG" />
+        <img data-image-src="3.JPG" />
+        <img data-image-src="4.JPG" />
+        <img data-image-src="5.JPG" />
+        <img data-image-src="6.JPG" />
+    </div>
+    <div id="canvas-container" class="hidden">
+
+    </div>
 </body>
 
 <script src="js/main/main.js"></script>

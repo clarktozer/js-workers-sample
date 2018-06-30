@@ -1,45 +1,85 @@
-var start = new Date();
+if ('serviceWorker' in navigator) {
+    console.log('CLIENT: service worker registration in progress.');
+    navigator.serviceWorker.register('service-worker.js').then(function () {
+        console.log('CLIENT: service worker registration complete.');
+    }, function () {
+        console.log('CLIENT: service worker registration failure.');
+    });
+} else {
+    console.log('CLIENT: service worker is not supported.');
+}
 
-fetch("http://www.splashbase.co/api/v1/images/latest", {
-    method: 'GET'
-}).then(response => {
-    return response.json();
-}).then((json) => {
-    var generated = document.getElementById("generated");
+(function () {
+    let imageContainer = document.getElementById("image-container");
+    let generatedImages = imageContainer.querySelectorAll('img');
+    let canvasContainer = document.getElementById("canvas-container");
 
-    var domImages = json.images.reduce((images, img) => {
-        const image = new Image();
-        var newImg = document.createElement("img");
-        newImg.setAttribute("data-image-src", img.url)
-        generated.appendChild(newImg);
-
-        images[img.id] = {
-            id: img.id,
-            src: img.url,
-            node: newImg,
-            image
-        };
-
-        return images;
-    }, {});
-
-    let imgWorker = new Worker("js/workers/img-request.js");
-    imgWorker.onmessage = function (e) {
-        e.data.forEach((d) => {
-            const {
-                src,
-                node
-            } = domImages[d];
-            node.src = src;
-        })
-    };
-
-    imgWorker.postMessage(
-        Object.keys(domImages).map(id => {
+    let getImages = () => {
+        return Array.from(generatedImages).map((img) => {
             return {
-                id,
-                src: domImages[id].src
+                src: img.getAttribute("data-image-src"),
+                node: img
             };
+        });
+    }
+
+    let loadImages = async (images) => {
+        return Promise.all(images.map((img)=>{
+            return loadImage(img.node, img.src);
+        }));
+    }
+
+    let loadImage = (img, src) => {
+        return new Promise((resolve, reject) => {
+            img.onload = function () {
+                let imgCanvas = document.createElement("canvas");
+                imgCanvas.width = img.width;
+                imgCanvas.height = img.height;
+                let canvasContext = imgCanvas.getContext('2d');
+                canvasContext.drawImage(img, 0, 0);
+                canvasContainer.appendChild(imgCanvas);
+                resolve(imgCanvas);
+            };
+            img.onerror = function () {
+                reject(new Error('Image not found: ' + src));
+            };
+            img.src = src;
+        });
+    }
+
+    let processImages = async function () {
+        let processingTimeStart = new Date();
+        let images = await loadImages(getImages());
+        let totalWorkerCount = images.length;
+        let finished = 0;
+
+        images.forEach((imageCanvas) => {
+            let tempContext = imageCanvas.getContext("2d");
+
+            let imageProcessingCompleted = function (e) {
+                let canvasData = e.data.result;
+
+                tempContext.putImageData(canvasData, 0, 0);
+                finished++;
+
+                if (finished == totalWorkerCount) {
+                    let processingEndedTime = new Date() - processingTimeStart;
+                    console.log("Image processing completed in: " + processingEndedTime + " ms");
+                    let loader = document.querySelector('.lds-roller');
+                    loader.classList.add('hidden');
+                    canvasContainer.classList.remove('hidden');
+                }
+            };
+            let worker = new Worker("js/workers/img-processor.js");
+            worker.onmessage = imageProcessingCompleted;
+
+            let canvasData = tempContext.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+            worker.postMessage({
+                data: canvasData,
+                length: imageCanvas.width * imageCanvas.height * 4
+            });
         })
-    );
-})
+    }
+
+    processImages();
+})();

@@ -64,10 +64,10 @@ gulp.task('templates:watch', () => {
 
 gulp.task('build', ['css', 'js', 'templates']);
 
-gulp.task('default', ['build', 'js:watch', 'css:watch', 'templates:watch'], () => {
+gulp.task('default', ['build', 'js:watch', 'css:watch', 'templates:watch'], () => {              
     browserSync.init({
         server: {
-            baseDir: './dist/'
+            baseDir: ['./dist/', './img/']
         },
         port: 4000
     });
