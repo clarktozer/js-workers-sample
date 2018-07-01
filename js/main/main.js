@@ -1,18 +1,18 @@
-if ('serviceWorker' in navigator) {
-    console.log('CLIENT: service worker registration in progress.');
-    navigator.serviceWorker.register('service-worker.js').then(function () {
-        console.log('CLIENT: service worker registration complete.');
-    }, function () {
-        console.log('CLIENT: service worker registration failure.');
-    });
-} else {
-    console.log('CLIENT: service worker is not supported.');
-}
-
 (function () {
     let imageContainer = document.getElementById("image-container");
     let generatedImages = imageContainer.querySelectorAll('img');
     let canvasContainer = document.getElementById("canvas-container");
+
+    let initServiceWorker = async () => {
+        if ('serviceWorker' in navigator) {
+            try {
+                var registration = await navigator.serviceWorker.register('service-worker.js');
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            } catch (e) {
+                console.log('ServiceWorker registration failed: ', e);
+            }
+        }
+    }
 
     let getImages = () => {
         return Array.from(generatedImages).map((img) => {
@@ -24,7 +24,7 @@ if ('serviceWorker' in navigator) {
     }
 
     let loadImages = async (images) => {
-        return Promise.all(images.map((img)=>{
+        return Promise.all(images.map((img) => {
             return loadImage(img.node, img.src);
         }));
     }
@@ -81,5 +81,6 @@ if ('serviceWorker' in navigator) {
         })
     }
 
+    initServiceWorker();
     processImages();
 })();

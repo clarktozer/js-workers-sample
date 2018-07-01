@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "description": "Sample project for using webworkers to process images and service workers to use offline",
   "scripts": {
-    "start": "gulp",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "gulp"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/clarktozer/js-workers-sample.git"
   },
-  "author": "Clark Tozer",
+  "keywords": [
+    "WebWorker",
+    "ServiceWorker"
+  ],
+  "author": "Clark Tozer <clarkwtozer@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/clarktozer/js-workers-sample/issues"

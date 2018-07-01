@@ -33,7 +33,8 @@ gulp.task('templates', () => {
 
 gulp.task('move', ['minify'], () => {
     return gulp.src([
-            'dist/js/service-worker.js'
+            'dist/js/service-worker.js',
+            'dist/js/sw.js'
         ])
         .pipe(gulp.dest('dist'));
 });
