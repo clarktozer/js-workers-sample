@@ -7,6 +7,7 @@ The code loads images and adds greyscale to each pixel of each image in a webwor
 ## How to run ##
 
 ```sh
+git clone the repo
 npm install
 npm start
 ```
